@@ -1,6 +1,4 @@
 'use client';
-import '@/styles/globals.css';
-import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -161,7 +159,7 @@ export default function Timer() {
         updateTable();
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error(' addTimetoDB Error:', error);
         alert("Error: Unauthorized, please restart your browser");
       });
   }
@@ -263,53 +261,42 @@ export default function Timer() {
             <button class="menu-btn font-bold delete-btn" data-id="${solve._id}">DELETE</button>
           </div>
         `;
-  
-        timelist.appendChild(listItem);
-  
-        listItem.querySelector('.delete-btn').addEventListener('click', (event) => {
-          const id = event.target.dataset.id;
-          handleDelete(id);
-        });
-  
-        listItem.querySelectorAll('.status-btn').forEach(button => {
-          button.addEventListener('click', (event) => {
+
+          timelist.appendChild(listItem);
+
+          listItem.querySelector('.delete-btn').addEventListener('click', (event) => {
             const id = event.target.dataset.id;
-            const status = event.target.dataset.status;
-            handleStatusChange(id, status);
+            handleDelete(id);
+          });
+
+          listItem.querySelectorAll('.status-btn').forEach(button => {
+            button.addEventListener('click', (event) => {
+              const id = event.target.dataset.id;
+              const status = event.target.dataset.status;
+              handleStatusChange(id, status);
+            });
+          });
+
+          listItem.addEventListener('click', () => {
+            const menu = listItem.querySelector('.dropdown-menu');
+            menu.classList.toggle('hidden');
           });
         });
-  
-        listItem.addEventListener('click', () => {
-          const menu = listItem.querySelector('.dropdown-menu');
-          menu.classList.toggle('hidden');
-        });
-      });
-    })
+      })
     .catch((error) => {
-      console.error('Error:', error);
+      console.error('UpdateTable Error:', error);
       alert("Error: Unauthorized, please restart your browser");
     });
   }
 
   return (
     <div className="bg-gray-300 flex flex-col h-screen overflow-hidden">
-      <nav className="bg-red-700 shadow-2xl sticky top-0 p-4 w-full">
-        <div className="container mx-auto flex text-4xl justify-between items-center">
-          <Link href="/timer" className="font-bold">Kermit Timer</Link>
-          <div className="flex space-x-10 ml-auto">
-            <Link href="/data" className="">Show my Data</Link>
-            <button type="submit" onClick={handleSubmit}>Log out</button>
-          </div>
-        </div>
-      </nav>
-
       <div className="flex flex-1 overflow-hidden">
         <div className="bg-gray-800 text-white w-64 p-4 overflow-y-auto flex flex-col">
           <h2 className="text-4xl font-bold mb-4">Times</h2>
           <ul id="timelist" className="space-y-2 text-2xl text-center"></ul>
         </div>
         
-
         <div className="flex-1 flex justify-center items-center">
           <p id="timer" className={timerClass}>0.000</p>
         </div>
